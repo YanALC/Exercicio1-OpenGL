@@ -1,70 +1,84 @@
-/* programa linha.c */
-
-/* Este programa tem como objetivo desenhar dois pontos na tela e ligá-los
-*  com uma linha.
-* Objetivos:
-	- Entender como abrir uma janela;
-	- Definir sistemas de coordenadas;
-	- Limpar a tela;
-	- Especificar cores de desenho.
-*/
-
+#include <utility>
 #include <windows.h>
 #include <GL\glut.h>
+#include <list>
+#include <fstream>
+#include <iostream>
 
-// prototipos das funcoes
+using namespace std;
+
+list<pair<double, double>> coordenadas;
+
 void init();
 
 void display();
 
 void keyboard(unsigned char key, int x, int y);
 
-// funcao principal
+pair<double, double> split(string line, const string &delimiter);
+
+void lerArquivo();
+
 int main(int argc, char **argv) {
-	glutInit(&argc, argv);                                  // inicializa o glut
-	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);           // especifica o uso de cores e buffers
-	glutInitWindowSize(300, 300);                          // especifica as dimensoes da janela
-	glutInitWindowPosition(100, 100);                      // especifica aonde a janela aparece na tela
-	glutCreateWindow("Desenhando uma linha");              // cria a janela
-	init();                                                  // define o estado inicial da janela antes de que qualquer desenho seja feito
-	glutDisplayFunc(display);                               // funcao que sera redesenhada pelo GLUT
-	glutKeyboardFunc(keyboard);                             // funcoes de teclado
-	glutMainLoop();                                         // mostra todas as janelas criadas
+	lerArquivo();
+	
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+	glutInitWindowSize(300, 300);
+	glutInitWindowPosition(100, 100);
+	glutCreateWindow("Desenhando uma linha");
+	init();
+	glutDisplayFunc(display);
+	glutKeyboardFunc(keyboard);
+	glutMainLoop();
 	return 0;
 }
 
-// definicao de cada funcao
+void lerArquivo() {
+	ifstream arquivo;
+	string linha;
+	
+	arquivo.open("arquivo.txt", ios_base::in);
+	if (arquivo.is_open()) {
+		while (!arquivo.eof()) {
+			getline(arquivo, linha);
+			coordenadas.push_back(split(linha, ","));
+		}
+	}
+}
+
+pair<double, double> split(string line, const string &delimiter) {
+	string aux = std::move(line);
+	size_t pos = aux.find(delimiter);
+	pair<double, double> results(stod(aux.substr(0, pos)), stod(aux.substr(
+			pos + 1, aux.size() - 1)));
+	return results;
+}
 
 void init() {
-	glClearColor(1.0, 1.0, 1.0, 1.0);    // cor de fundo (R, G, B, Alfa (transparência))
-	glOrtho(0, 300, 0, 300, -1, 1);     // modo de projecao ortogonal
+	glClearColor(1.0, 1.0, 1.0, 1.0);
+	glOrtho(0, 300, 0, 300, -1, 1);
 }
 
 
 void display() {
-	glClear(GL_COLOR_BUFFER_BIT);               // limpa a janela
-	glColor3f(0.0, 0.0, 0.0);                  // cor da linha
-	glBegin(GL_LINES);
-	glVertex2i(40, 200);
-	glVertex2i(200, 10);    // coordenadas inicial e final da linha
-	glEnd();
+	glClear(GL_COLOR_BUFFER_BIT);
+	glColor3f(0.0, 0.0, 0.0);
 	
-	glBegin(GL_LINES);
-	glVertex2i(200, 10);
-	glVertex2i(200, 200);    // coordenadas inicial e final da linha
-	glEnd();
-	
-	glBegin(GL_LINES);
-	glVertex2i(200, 200);
-	glVertex2i(40, 200);    // coordenadas inicial e final da linha
-	glEnd();
+	for (pair<double, double> coordenada: coordenadas) {
+		
+		glBegin(GL_LINES);
+		glVertex2i(static_cast<GLint>(coordenada.first), static_cast<GLint>(coordenada.second));
+		glEnd();
+		
+	}
 	
 	glFlush();
 }
 
 void keyboard(unsigned char key, int x, int y) {
 	switch (key) {
-		case 27:                                         // tecla Esc (encerra o programa)
+		case 27:
 			exit(0);
 		default:
 			break;
