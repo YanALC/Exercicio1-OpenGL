@@ -2,11 +2,12 @@
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <bits/stdc++.h>
-
 using namespace std;
 
 vector<GLdouble> coordenadas;
-bool preenchimento = true;
+bool preenchimento;
+
+const GLubyte dog_map[] = {};
 
 void lerArquivo();
 
@@ -46,9 +47,7 @@ int main(int argc, char **argv) {
 		char aux;
 		cout << "Deseja preenchimento da figura? (s/n)" << endl;
 		cin >> aux;
-		if(aux == 's') {
-			preenchimento = true;
-		}
+		preenchimento = aux == 's';
 
 		glutInit(&argc, argv);
 		glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
@@ -77,14 +76,20 @@ void init() {
 void display() {
 	GLdouble *pontos = coordenadas.data();
 	glClear(GL_COLOR_BUFFER_BIT);
-	glColor3f(0.0, 0.0, 0.0);
+	COLORREF rosa = 0xFF1CAE;
+	float m_ColorR = GetRValue(rosa) / 255.0f;
+	float m_ColorG = GetGValue(rosa) / 255.0f;
+	float m_ColorB = GetBValue(rosa) / 255.0f;
+	glColor3f(m_ColorR, m_ColorG, m_ColorB);
 
 	glEnable(GL_POLYGON_SMOOTH);
 	glEnable(GL_POLYGON_SMOOTH_HINT);
+	glEnable(GL_POLYGON_STIPPLE);
 	if(!preenchimento) {
 		glLineWidth(3);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
+	glPolygonStipple(dog_map);
 	glPushAttrib(GL_POLYGON_BIT);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2, GL_DOUBLE, 0, pontos);
