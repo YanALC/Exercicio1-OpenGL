@@ -10,20 +10,24 @@
 
 using namespace std;
 
+/**
+ * @class ImportadorBmp
+ * Utils para importar imagens BMP como textura no OpenGL
+ */
 class ImportadorBmp {
 public:
 	unsigned char *textura = nullptr;
-	int largura, altura;
+	int largura{}, altura{};
 	
-	ImportadorBmp() {}
+	ImportadorBmp() = default;
 	
 	explicit ImportadorBmp(const char *nomeArquivo);
 	
 	~ImportadorBmp();
 
 private:
-	BITMAPFILEHEADER bfh;
-	BITMAPINFOHEADER bih;
+	BITMAPFILEHEADER bfh{};
+	BITMAPINFOHEADER bih{};
 };
 
 

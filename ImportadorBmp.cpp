@@ -5,6 +5,10 @@
 #include <fstream>
 #include "ImportadorBmp.h"
 
+/**
+ * Construtor principal da classe Utils para importar imagem BMP
+ * @param nomeArquivo
+ */
 ImportadorBmp::ImportadorBmp(const char *nomeArquivo) {
 	try {
 		FILE *arquivo = fopen(nomeArquivo, "rb");
