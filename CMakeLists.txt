@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.13)
-project(opengl-teste)
+project(Exercicio1-OpenGL)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 
@@ -19,5 +19,5 @@ file(GLOB SOURCE_FILES
 		*.cpp
 		*.h)
 
-set_target_properties(opengl-teste PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${OPENGL_gl_LIBRARY} opengl32 glu32)
